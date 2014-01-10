@@ -1,0 +1,253 @@
+rm -rf build *.class StatsMsg.java pp
+rm -rf _TOSSIMmodule.so TOSSIM.pyc TOSSIM.py app.xml simbuild
+rm -rf VolumeMapC.nc
+rm -f TestCpuAppC.cmap TestCpuAppC.dot TestCpuAppC.html TestCpuAppC.png
+mkdir -p build/telosb
+mig java -target=null -I/opt/tinyos-2.1.2/tos/lib/printf -DNEW_PRINTF_SEMANTICS -DPRINTFUART_ENABLED -DIDENT_APPNAME=\"TestCpuAppC\" -DIDENT_USERNAME=\"root\" -DIDENT_HOSTNAME=\"tpe420\" -DIDENT_USERHASH=0x40207fa3L -DIDENT_TIMESTAMP=0x51607375L -DIDENT_UIDHASH=0x05837e78L -java-classname=StatsMsg cmds.h msg_t -o StatsMsg.java
+javac -target 1.4 -source 1.4 *.java
+    compiling TestCpuAppC to a telosb binary
+ncc -o build/telosb/main.exe  -Os -v -fnesc-separator=__ -Wall -Wshadow -Wnesc-all -target=telosb -fnesc-cfile=build/telosb/app.c -board= -DDEFINED_TOS_AM_GROUP=0x22 -I/opt/tinyos-2.1.2/tos/lib/printf -DNEW_PRINTF_SEMANTICS -DPRINTFUART_ENABLED -DIDENT_APPNAME=\"TestCpuAppC\" -DIDENT_USERNAME=\"root\" -DIDENT_HOSTNAME=\"tpe420\" -DIDENT_USERHASH=0x40207fa3L -DIDENT_TIMESTAMP=0x51607375L -DIDENT_UIDHASH=0x05837e78L  TestCpuAppC.nc -lm 
+/usr/bin/nescc -fnesc-include=tos -topdir=/opt/tinyos-2.1.2 -fnesc-scheduler=TinySchedulerC,TinySchedulerC.TaskBasic,TaskBasic,TaskBasic,runTask,postTask -DPLATFORM_TELOSB -DBOARD_ -o build/telosb/main.exe -Os -v -fnesc-separator=__ -Wall -Wshadow -Wnesc-all -fnesc-cfile=build/telosb/app.c -DDEFINED_TOS_AM_GROUP=0x22 -DNEW_PRINTF_SEMANTICS -DPRINTFUART_ENABLED -DIDENT_APPNAME="TestCpuAppC" -DIDENT_USERNAME="root" -DIDENT_HOSTNAME="tpe420" -DIDENT_USERHASH=0x40207fa3L -DIDENT_TIMESTAMP=0x51607375L -DIDENT_UIDHASH=0x05837e78L TestCpuAppC.nc -lm -gcc=msp430-gcc -mmcu=msp430f1611 -fnesc-target=msp430 -fnesc-no-debug -I/opt/tinyos-2.1.2/tos/lib/printf -I/opt/tinyos-2.1.2/tos/sensorboards/ -I/opt/tinyos-2.1.2/tos/platforms/telosb -I/opt/tinyos-2.1.2/tos/platforms/telosb -I/opt/tinyos-2.1.2/tos/platforms/telosb/chips/stm25p -I/opt/tinyos-2.1.2/tos/platforms/telosa -I/opt/tinyos-2.1.2/tos/platforms/telosa/chips/cc2420 -I/opt/tinyos-2.1.2/tos/platforms/telosa/chips/s1087 -I/opt/tinyos-2.1.2/tos/platforms/telosa/chips/s10871 -I/opt/tinyos-2.1.2/tos/platforms/telosa/chips/sht11 -I/opt/tinyos-2.1.2/tos/platforms/epic/chips/ds2411 -I/opt/tinyos-2.1.2/tos/chips/cc2420 -I/opt/tinyos-2.1.2/tos/chips/cc2420/alarm -I/opt/tinyos-2.1.2/tos/chips/cc2420/control -I/opt/tinyos-2.1.2/tos/chips/cc2420/csma -I/opt/tinyos-2.1.2/tos/chips/cc2420/interfaces -I/opt/tinyos-2.1.2/tos/chips/cc2420/link -I/opt/tinyos-2.1.2/tos/chips/cc2420/lowpan -I/opt/tinyos-2.1.2/tos/chips/cc2420/lpl -I/opt/tinyos-2.1.2/tos/chips/cc2420/packet -I/opt/tinyos-2.1.2/tos/chips/cc2420/receive -I/opt/tinyos-2.1.2/tos/chips/cc2420/spi -I/opt/tinyos-2.1.2/tos/chips/cc2420/transmit -I/opt/tinyos-2.1.2/tos/chips/cc2420/unique -I/opt/tinyos-2.1.2/tos/chips/cc2420/security -I/opt/tinyos-2.1.2/tos/chips/msp430 -I/opt/tinyos-2.1.2/tos/chips/msp430/adc12 -I/opt/tinyos-2.1.2/tos/chips/msp430/dma -I/opt/tinyos-2.1.2/tos/chips/msp430/pins -I/opt/tinyos-2.1.2/tos/chips/msp430/timer -I/opt/tinyos-2.1.2/tos/chips/msp430/usart -I/opt/tinyos-2.1.2/tos/chips/msp430/sensors -I/opt/tinyos-2.1.2/tos/chips/stm25p -I/opt/tinyos-2.1.2/tos/chips/sht11 -I/opt/tinyos-2.1.2/tos/chips/ds2401 -I/opt/tinyos-2.1.2/tos/lib/timer -I/opt/tinyos-2.1.2/tos/lib/serial -I/opt/tinyos-2.1.2/tos/lib/adc -I/opt/tinyos-2.1.2/tos/lib/power -I/opt/tinyos-2.1.2/tos/interfaces -I/opt/tinyos-2.1.2/tos/types -I/opt/tinyos-2.1.2/tos/system
+NCDIR="/usr/lib/ncc"
+NESCC_ARGS="-fnesc-include=nesc_nx -fnesc-include=tos -fnesc-scheduler=TinySchedulerC,TinySchedulerC.TaskBasic,TaskBasic,TaskBasic,runTask,postTask -fnesc-separator=__ -Wnesc-all -fnesc-target=msp430 -fnesc-no-debug"
+NESCC_CFILE="build/telosb/app.c"
+NESCC_GCC="msp430-gcc"
+msp430-gcc -specs=/usr/lib/ncc/tdspecs -I/usr/lib/ncc -D PLATFORM_TELOSB -D BOARD_ -o build/telosb/main.exe -Os -v -Wall -Wshadow -D DEFINED_TOS_AM_GROUP=0x22 -D NEW_PRINTF_SEMANTICS -D PRINTFUART_ENABLED -D IDENT_APPNAME="TestCpuAppC" -D IDENT_USERNAME="root" -D IDENT_HOSTNAME="tpe420" -D IDENT_USERHASH=0x40207fa3L -D IDENT_TIMESTAMP=0x51607375L -D IDENT_UIDHASH=0x05837e78L TestCpuAppC.nc -lm -mmcu=msp430f1611 -I /opt/tinyos-2.1.2/tos/lib/printf -I /opt/tinyos-2.1.2/tos/sensorboards/ -I /opt/tinyos-2.1.2/tos/platforms/telosb -I /opt/tinyos-2.1.2/tos/platforms/telosb -I /opt/tinyos-2.1.2/tos/platforms/telosb/chips/stm25p -I /opt/tinyos-2.1.2/tos/platforms/telosa -I /opt/tinyos-2.1.2/tos/platforms/telosa/chips/cc2420 -I /opt/tinyos-2.1.2/tos/platforms/telosa/chips/s1087 -I /opt/tinyos-2.1.2/tos/platforms/telosa/chips/s10871 -I /opt/tinyos-2.1.2/tos/platforms/telosa/chips/sht11 -I /opt/tinyos-2.1.2/tos/platforms/epic/chips/ds2411 -I /opt/tinyos-2.1.2/tos/chips/cc2420 -I /opt/tinyos-2.1.2/tos/chips/cc2420/alarm -I /opt/tinyos-2.1.2/tos/chips/cc2420/control -I /opt/tinyos-2.1.2/tos/chips/cc2420/csma -I /opt/tinyos-2.1.2/tos/chips/cc2420/interfaces -I /opt/tinyos-2.1.2/tos/chips/cc2420/link -I /opt/tinyos-2.1.2/tos/chips/cc2420/lowpan -I /opt/tinyos-2.1.2/tos/chips/cc2420/lpl -I /opt/tinyos-2.1.2/tos/chips/cc2420/packet -I /opt/tinyos-2.1.2/tos/chips/cc2420/receive -I /opt/tinyos-2.1.2/tos/chips/cc2420/spi -I /opt/tinyos-2.1.2/tos/chips/cc2420/transmit -I /opt/tinyos-2.1.2/tos/chips/cc2420/unique -I /opt/tinyos-2.1.2/tos/chips/cc2420/security -I /opt/tinyos-2.1.2/tos/chips/msp430 -I /opt/tinyos-2.1.2/tos/chips/msp430/adc12 -I /opt/tinyos-2.1.2/tos/chips/msp430/dma -I /opt/tinyos-2.1.2/tos/chips/msp430/pins -I /opt/tinyos-2.1.2/tos/chips/msp430/timer -I /opt/tinyos-2.1.2/tos/chips/msp430/usart -I /opt/tinyos-2.1.2/tos/chips/msp430/sensors -I /opt/tinyos-2.1.2/tos/chips/stm25p -I /opt/tinyos-2.1.2/tos/chips/sht11 -I /opt/tinyos-2.1.2/tos/chips/ds2401 -I /opt/tinyos-2.1.2/tos/lib/timer -I /opt/tinyos-2.1.2/tos/lib/serial -I /opt/tinyos-2.1.2/tos/lib/adc -I /opt/tinyos-2.1.2/tos/lib/power -I /opt/tinyos-2.1.2/tos/interfaces -I /opt/tinyos-2.1.2/tos/types -I /opt/tinyos-2.1.2/tos/system -DNESC=134
+nescc: 1.3.4
+Using built-in specs.
+Reading specs from /usr/bin/../lib/gcc/msp430/4.6.3/../../../../msp430/lib/msp430mcu.spec
+Reading specs from /usr/lib/ncc/tdspecs
+COLLECT_GCC=msp430-gcc
+COLLECT_LTO_WRAPPER=/usr/bin/../libexec/gcc/msp430/4.6.3/lto-wrapper
+Target: msp430
+Configured with: ../configure --prefix=/home/cire/mm/w/tinyos-main.git/tinyos-2.x/packaging/msp430-46/debian/usr --target=msp430 --enable-languages=c
+Thread model: single
+gcc version 4.6.3 20120301 (mspgcc LTS 20120406 unpatched) (GCC) 
+COLLECT_GCC_OPTIONS='-I' '/usr/lib/ncc' '-D' 'PLATFORM_TELOSB' '-D' 'BOARD_' '-o' 'build/telosb/main.exe' '-Os' '-v' '-Wall' '-Wshadow' '-D' 'DEFINED_TOS_AM_GROUP=0x22' '-D' 'NEW_PRINTF_SEMANTICS' '-D' 'PRINTFUART_ENABLED' '-D' 'IDENT_APPNAME="TestCpuAppC"' '-D' 'IDENT_USERNAME="root"' '-D' 'IDENT_HOSTNAME="tpe420"' '-D' 'IDENT_USERHASH=0x40207fa3L' '-D' 'IDENT_TIMESTAMP=0x51607375L' '-D' 'IDENT_UIDHASH=0x05837e78L' '-mmcu=msp430f1611' '-I' '/opt/tinyos-2.1.2/tos/lib/printf' '-I' '/opt/tinyos-2.1.2/tos/sensorboards/' '-I' '/opt/tinyos-2.1.2/tos/platforms/telosb' '-I' '/opt/tinyos-2.1.2/tos/platforms/telosb' '-I' '/opt/tinyos-2.1.2/tos/platforms/telosb/chips/stm25p' '-I' '/opt/tinyos-2.1.2/tos/platforms/telosa' '-I' '/opt/tinyos-2.1.2/tos/platforms/telosa/chips/cc2420' '-I' '/opt/tinyos-2.1.2/tos/platforms/telosa/chips/s1087' '-I' '/opt/tinyos-2.1.2/tos/platforms/telosa/chips/s10871' '-I' '/opt/tinyos-2.1.2/tos/platforms/telosa/chips/sht11' '-I' '/opt/tinyos-2.1.2/tos/platforms/epic/chips/ds2411' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/alarm' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/control' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/csma' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/interfaces' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/link' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/lowpan' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/lpl' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/packet' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/receive' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/spi' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/transmit' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/unique' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/security' '-I' '/opt/tinyos-2.1.2/tos/chips/msp430' '-I' '/opt/tinyos-2.1.2/tos/chips/msp430/adc12' '-I' '/opt/tinyos-2.1.2/tos/chips/msp430/dma' '-I' '/opt/tinyos-2.1.2/tos/chips/msp430/pins' '-I' '/opt/tinyos-2.1.2/tos/chips/msp430/timer' '-I' '/opt/tinyos-2.1.2/tos/chips/msp430/usart' '-I' '/opt/tinyos-2.1.2/tos/chips/msp430/sensors' '-I' '/opt/tinyos-2.1.2/tos/chips/stm25p' '-I' '/opt/tinyos-2.1.2/tos/chips/sht11' '-I' '/opt/tinyos-2.1.2/tos/chips/ds2401' '-I' '/opt/tinyos-2.1.2/tos/lib/timer' '-I' '/opt/tinyos-2.1.2/tos/lib/serial' '-I' '/opt/tinyos-2.1.2/tos/lib/adc' '-I' '/opt/tinyos-2.1.2/tos/lib/power' '-I' '/opt/tinyos-2.1.2/tos/interfaces' '-I' '/opt/tinyos-2.1.2/tos/types' '-I' '/opt/tinyos-2.1.2/tos/system' '-D' 'NESC=134' '-mcpu=430' '-mmpy=16' '-mivcnt=16'
+ perl -S nesc-compile -mmcu=msp430f1611 -mcpu=430 -mmpy=16 -mivcnt=16 -D PLATFORM_TELOSB -D BOARD_ -D DEFINED_TOS_AM_GROUP=0x22 -D NEW_PRINTF_SEMANTICS -D PRINTFUART_ENABLED -D IDENT_APPNAME="TestCpuAppC" -D IDENT_USERNAME="root" -D IDENT_HOSTNAME="tpe420" -D IDENT_USERHASH=0x40207fa3L -D IDENT_TIMESTAMP=0x51607375L -D IDENT_UIDHASH=0x05837e78L -D NESC=134 -I /usr/lib/ncc -I /opt/tinyos-2.1.2/tos/lib/printf -I /opt/tinyos-2.1.2/tos/sensorboards/ -I /opt/tinyos-2.1.2/tos/platforms/telosb -I /opt/tinyos-2.1.2/tos/platforms/telosb -I /opt/tinyos-2.1.2/tos/platforms/telosb/chips/stm25p -I /opt/tinyos-2.1.2/tos/platforms/telosa -I /opt/tinyos-2.1.2/tos/platforms/telosa/chips/cc2420 -I /opt/tinyos-2.1.2/tos/platforms/telosa/chips/s1087 -I /opt/tinyos-2.1.2/tos/platforms/telosa/chips/s10871 -I /opt/tinyos-2.1.2/tos/platforms/telosa/chips/sht11 -I /opt/tinyos-2.1.2/tos/platforms/epic/chips/ds2411 -I /opt/tinyos-2.1.2/tos/chips/cc2420 -I /opt/tinyos-2.1.2/tos/chips/cc2420/alarm -I /opt/tinyos-2.1.2/tos/chips/cc2420/control -I /opt/tinyos-2.1.2/tos/chips/cc2420/csma -I /opt/tinyos-2.1.2/tos/chips/cc2420/interfaces -I /opt/tinyos-2.1.2/tos/chips/cc2420/link -I /opt/tinyos-2.1.2/tos/chips/cc2420/lowpan -I /opt/tinyos-2.1.2/tos/chips/cc2420/lpl -I /opt/tinyos-2.1.2/tos/chips/cc2420/packet -I /opt/tinyos-2.1.2/tos/chips/cc2420/receive -I /opt/tinyos-2.1.2/tos/chips/cc2420/spi -I /opt/tinyos-2.1.2/tos/chips/cc2420/transmit -I /opt/tinyos-2.1.2/tos/chips/cc2420/unique -I /opt/tinyos-2.1.2/tos/chips/cc2420/security -I /opt/tinyos-2.1.2/tos/chips/msp430 -I /opt/tinyos-2.1.2/tos/chips/msp430/adc12 -I /opt/tinyos-2.1.2/tos/chips/msp430/dma -I /opt/tinyos-2.1.2/tos/chips/msp430/pins -I /opt/tinyos-2.1.2/tos/chips/msp430/timer -I /opt/tinyos-2.1.2/tos/chips/msp430/usart -I /opt/tinyos-2.1.2/tos/chips/msp430/sensors -I /opt/tinyos-2.1.2/tos/chips/stm25p -I /opt/tinyos-2.1.2/tos/chips/sht11 -I /opt/tinyos-2.1.2/tos/chips/ds2401 -I /opt/tinyos-2.1.2/tos/lib/timer -I /opt/tinyos-2.1.2/tos/lib/serial -I /opt/tinyos-2.1.2/tos/lib/adc -I /opt/tinyos-2.1.2/tos/lib/power -I /opt/tinyos-2.1.2/tos/interfaces -I /opt/tinyos-2.1.2/tos/types -I /opt/tinyos-2.1.2/tos/system -Os -Wall -Wshadow -v -fnesc-tmpcfile=/tmp/ccGHQWeG.c -o /tmp/ccigZl2M.o TestCpuAppC.nc -_ASM
+nesc1 -U__BLOCKS__ -fnesc-include=deputy_nodeputy -fnesc-gcc=msp430-gcc -mmcu=msp430f1611 -mcpu=430 -mmpy=16 -mivcnt=16 -DPLATFORM_TELOSB -DBOARD_ -DDEFINED_TOS_AM_GROUP=0x22 -DNEW_PRINTF_SEMANTICS -DPRINTFUART_ENABLED -DIDENT_APPNAME="TestCpuAppC" -DIDENT_USERNAME="root" -DIDENT_HOSTNAME="tpe420" -DIDENT_USERHASH=0x40207fa3L -DIDENT_TIMESTAMP=0x51607375L -DIDENT_UIDHASH=0x05837e78L -DNESC=134 -I/usr/lib/ncc -I/opt/tinyos-2.1.2/tos/lib/printf -I/opt/tinyos-2.1.2/tos/sensorboards/ -I/opt/tinyos-2.1.2/tos/platforms/telosb -I/opt/tinyos-2.1.2/tos/platforms/telosb -I/opt/tinyos-2.1.2/tos/platforms/telosb/chips/stm25p -I/opt/tinyos-2.1.2/tos/platforms/telosa -I/opt/tinyos-2.1.2/tos/platforms/telosa/chips/cc2420 -I/opt/tinyos-2.1.2/tos/platforms/telosa/chips/s1087 -I/opt/tinyos-2.1.2/tos/platforms/telosa/chips/s10871 -I/opt/tinyos-2.1.2/tos/platforms/telosa/chips/sht11 -I/opt/tinyos-2.1.2/tos/platforms/epic/chips/ds2411 -I/opt/tinyos-2.1.2/tos/chips/cc2420 -I/opt/tinyos-2.1.2/tos/chips/cc2420/alarm -I/opt/tinyos-2.1.2/tos/chips/cc2420/control -I/opt/tinyos-2.1.2/tos/chips/cc2420/csma -I/opt/tinyos-2.1.2/tos/chips/cc2420/interfaces -I/opt/tinyos-2.1.2/tos/chips/cc2420/link -I/opt/tinyos-2.1.2/tos/chips/cc2420/lowpan -I/opt/tinyos-2.1.2/tos/chips/cc2420/lpl -I/opt/tinyos-2.1.2/tos/chips/cc2420/packet -I/opt/tinyos-2.1.2/tos/chips/cc2420/receive -I/opt/tinyos-2.1.2/tos/chips/cc2420/spi -I/opt/tinyos-2.1.2/tos/chips/cc2420/transmit -I/opt/tinyos-2.1.2/tos/chips/cc2420/unique -I/opt/tinyos-2.1.2/tos/chips/cc2420/security -I/opt/tinyos-2.1.2/tos/chips/msp430 -I/opt/tinyos-2.1.2/tos/chips/msp430/adc12 -I/opt/tinyos-2.1.2/tos/chips/msp430/dma -I/opt/tinyos-2.1.2/tos/chips/msp430/pins -I/opt/tinyos-2.1.2/tos/chips/msp430/timer -I/opt/tinyos-2.1.2/tos/chips/msp430/usart -I/opt/tinyos-2.1.2/tos/chips/msp430/sensors -I/opt/tinyos-2.1.2/tos/chips/stm25p -I/opt/tinyos-2.1.2/tos/chips/sht11 -I/opt/tinyos-2.1.2/tos/chips/ds2401 -I/opt/tinyos-2.1.2/tos/lib/timer -I/opt/tinyos-2.1.2/tos/lib/serial -I/opt/tinyos-2.1.2/tos/lib/adc -I/opt/tinyos-2.1.2/tos/lib/power -I/opt/tinyos-2.1.2/tos/interfaces -I/opt/tinyos-2.1.2/tos/types -I/opt/tinyos-2.1.2/tos/system -Wall -Wshadow -v -fnesc-tmpcfile=/tmp/ccGHQWeG.c -fnesc-include=nesc_nx -fnesc-include=tos -fnesc-scheduler=TinySchedulerC,TinySchedulerC.TaskBasic,TaskBasic,TaskBasic,runTask,postTask -fnesc-separator=__ -Wnesc-all -fnesc-target=msp430 -fnesc-no-debug TestCpuAppC.nc -o build/telosb/app.c
+#include "..." and component search starts here:
+#include <...> search starts here:
+ /usr/lib/ncc/
+ /opt/tinyos-2.1.2/tos/lib/printf/
+ /opt/tinyos-2.1.2/tos/sensorboards/
+ /opt/tinyos-2.1.2/tos/platforms/telosb/
+ /opt/tinyos-2.1.2/tos/platforms/telosb/
+ /opt/tinyos-2.1.2/tos/platforms/telosb/chips/stm25p/
+ /opt/tinyos-2.1.2/tos/platforms/telosa/
+ /opt/tinyos-2.1.2/tos/platforms/telosa/chips/cc2420/
+ /opt/tinyos-2.1.2/tos/platforms/telosa/chips/s1087/
+ /opt/tinyos-2.1.2/tos/platforms/telosa/chips/s10871/
+ /opt/tinyos-2.1.2/tos/platforms/telosa/chips/sht11/
+ /opt/tinyos-2.1.2/tos/platforms/epic/chips/ds2411/
+ /opt/tinyos-2.1.2/tos/chips/cc2420/
+ /opt/tinyos-2.1.2/tos/chips/cc2420/alarm/
+ /opt/tinyos-2.1.2/tos/chips/cc2420/control/
+ /opt/tinyos-2.1.2/tos/chips/cc2420/csma/
+ /opt/tinyos-2.1.2/tos/chips/cc2420/interfaces/
+ /opt/tinyos-2.1.2/tos/chips/cc2420/link/
+ /opt/tinyos-2.1.2/tos/chips/cc2420/lowpan/
+ /opt/tinyos-2.1.2/tos/chips/cc2420/lpl/
+ /opt/tinyos-2.1.2/tos/chips/cc2420/packet/
+ /opt/tinyos-2.1.2/tos/chips/cc2420/receive/
+ /opt/tinyos-2.1.2/tos/chips/cc2420/spi/
+ /opt/tinyos-2.1.2/tos/chips/cc2420/transmit/
+ /opt/tinyos-2.1.2/tos/chips/cc2420/unique/
+ /opt/tinyos-2.1.2/tos/chips/cc2420/security/
+ /opt/tinyos-2.1.2/tos/chips/msp430/
+ /opt/tinyos-2.1.2/tos/chips/msp430/adc12/
+ /opt/tinyos-2.1.2/tos/chips/msp430/dma/
+ /opt/tinyos-2.1.2/tos/chips/msp430/pins/
+ /opt/tinyos-2.1.2/tos/chips/msp430/timer/
+ /opt/tinyos-2.1.2/tos/chips/msp430/usart/
+ /opt/tinyos-2.1.2/tos/chips/msp430/sensors/
+ /opt/tinyos-2.1.2/tos/chips/stm25p/
+ /opt/tinyos-2.1.2/tos/chips/sht11/
+ /opt/tinyos-2.1.2/tos/chips/ds2401/
+ /opt/tinyos-2.1.2/tos/lib/timer/
+ /opt/tinyos-2.1.2/tos/lib/serial/
+ /opt/tinyos-2.1.2/tos/lib/adc/
+ /opt/tinyos-2.1.2/tos/lib/power/
+ /opt/tinyos-2.1.2/tos/interfaces/
+ /opt/tinyos-2.1.2/tos/types/
+ /opt/tinyos-2.1.2/tos/system/
+ /usr/bin/../lib/gcc/msp430/4.6.3/include/
+ /usr/bin/../lib/gcc/msp430/4.6.3/include-fixed/
+ /usr/bin/../lib/gcc/msp430/4.6.3/../../../../msp430/include/
+End of search list.
+preprocessing /usr/lib/ncc/deputy_nodeputy.h
+preprocessing /usr/lib/ncc/nesc_nx.h
+preprocessing /opt/tinyos-2.1.2/tos/system/tos.h
+preprocessing /opt/tinyos-2.1.2/tos/system/TinySchedulerC.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/Scheduler.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/TaskBasic.nc
+preprocessing /opt/tinyos-2.1.2/tos/system/SchedulerBasicP.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/McuSleep.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/McuSleepC.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/McuPowerState.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/McuPowerOverride.nc
+preprocessing TestCpuAppC.nc
+TestCpuAppC.nc:12:1: warning: "NEW_PRINTF_SEMANTICS" redefined
+In file included from TestCpuAppC.nc:1:
+<built-in>: warning: this is the location of the previous definition
+preprocessing /opt/tinyos-2.1.2/tos/system/MainC.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/Boot.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/Init.nc
+preprocessing /opt/tinyos-2.1.2/tos/platforms/telosa/PlatformC.nc
+preprocessing /opt/tinyos-2.1.2/tos/platforms/telosa/PlatformP.nc
+preprocessing /opt/tinyos-2.1.2/tos/platforms/telosb/MotePlatformC.nc
+preprocessing /opt/tinyos-2.1.2/tos/platforms/telosb/MoteClockC.nc
+preprocessing Msp430ClockC.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/Msp430ClockInit.nc
+preprocessing Msp430ClockP.nc
+In file included from Msp430ClockP.nc:28:
+/opt/tinyos-2.1.2/tos/chips/msp430/timer/Msp430DcoSpec.h:51:2: warning: #warning "Using 2**23 Hz DCO for software SpiPacket"
+Msp430ClockP.nc:114:2: warning: #warning "Using MCLK/8 for SMCLK"
+Msp430ClockP.nc:119:2: warning: #warning "Using DEFAULT 1 MHz SMCLK"
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/Msp430TimerC.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/Msp430Timer.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/Msp430TimerControl.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/Msp430Compare.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/Msp430Capture.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/Msp430TimerP.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/Msp430TimerEvent.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/Msp430TimerCapComP.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/Msp430TimerCommonP.nc
+preprocessing /opt/tinyos-2.1.2/tos/platforms/telosb/MoteClockP.nc
+preprocessing /opt/tinyos-2.1.2/tos/system/RealMainP.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/printf/PrintfC.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/serial/SerialAMSenderC.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/AMSend.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/Packet.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/AMPacket.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/PacketAcknowledgements.nc
+preprocessing /opt/tinyos-2.1.2/tos/system/AMQueueEntryP.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/Send.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/serial/SerialAMQueueP.nc
+preprocessing /opt/tinyos-2.1.2/tos/system/AMQueueImplP.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/serial/SerialActiveMessageC.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/SplitControl.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/Receive.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/Leds.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/serial/SerialActiveMessageP.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/serial/SerialDispatcherC.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/serial/SerialPacketInfo.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/serial/SerialP.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/serial/SendBytePacket.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/serial/ReceiveBytePacket.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/serial/SerialFrameComm.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/StdControl.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/serial/SerialFlush.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/serial/SerialDispatcherP.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/serial/HdlcTranslateC.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/UartStream.nc
+preprocessing /opt/tinyos-2.1.2/tos/platforms/telosa/PlatformSerialC.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/UartByte.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/usart/Msp430Uart1C.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/Resource.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/ResourceRequested.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/usart/Msp430UartConfigure.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/usart/Msp430Uart1P.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/ResourceConfigure.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/usart/HplMsp430UsartInterrupts.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/usart/Msp430UartP.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/usart/HplMsp430Usart.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/timer/Counter.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/usart/HplMsp430Usart1C.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/AsyncStdControl.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/usart/HplMsp430Usart1P.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/pins/HplMsp430GeneralIO.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/pins/HplMsp430GeneralIOC.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/pins/HplMsp430GeneralIOP.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/Counter32khz16C.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/Msp430Counter32khzC.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/Msp430CounterC.nc
+preprocessing /opt/tinyos-2.1.2/tos/system/LedsC.nc
+preprocessing /opt/tinyos-2.1.2/tos/system/LedsP.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/GeneralIO.nc
+preprocessing /opt/tinyos-2.1.2/tos/platforms/telosa/PlatformLedsC.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/pins/Msp430GpioC.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/usart/Msp430Usart1C.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/ArbiterInfo.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/usart/Msp430UsartShare1P.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/usart/Msp430UsartShareP.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/usart/HplMsp430I2CInterrupts.nc
+preprocessing /opt/tinyos-2.1.2/tos/system/FcfsArbiterC.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/ResourceDefaultOwner.nc
+preprocessing /opt/tinyos-2.1.2/tos/system/FcfsResourceQueueC.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/ResourceQueue.nc
+preprocessing /opt/tinyos-2.1.2/tos/system/ArbiterP.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/power/AsyncStdControlPowerManagerC.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/power/PowerDownCleanup.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/power/AsyncPowerManagerP.nc
+preprocessing TelosSerialP.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/serial/SerialPacketInfoActiveMessageP.nc
+preprocessing /opt/tinyos-2.1.2/tos/system/QueueC.nc
+preprocessing /opt/tinyos-2.1.2/tos/interfaces/Queue.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/printf/PrintfP.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/printf/Putchar.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/printf/PutcharC.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/printf/PutcharP.nc
+preprocessing TestCpuC.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/timer/Timer.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/printf/SerialStartC.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/printf/SerialStartP.nc
+preprocessing /opt/tinyos-2.1.2/tos/system/TimerMilliC.nc
+preprocessing /opt/tinyos-2.1.2/tos/system/TimerMilliP.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/HilTimerMilliC.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/timer/LocalTime.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/AlarmMilli32C.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/timer/Alarm.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/Alarm32khz16C.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/Msp430Timer32khzC.nc
+preprocessing /opt/tinyos-2.1.2/tos/platforms/telosa/Msp430Timer32khzMapC.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/Msp430AlarmC.nc
+preprocessing /opt/tinyos-2.1.2/tos/chips/msp430/timer/CounterMilli32C.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/timer/TransformCounterC.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/timer/TransformAlarmC.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/timer/AlarmToTimerC.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/timer/VirtualizeTimerC.nc
+preprocessing /opt/tinyos-2.1.2/tos/lib/timer/CounterToLocalTimeC.nc
+msp430-gcc -B/usr/lib/ncc -mmcu=msp430f1611 -mcpu=430 -mmpy=16 -mivcnt=16 -Os -Wall -Wshadow -v -o /tmp/ccigZl2M.o -c -fdollars-in-identifiers build/telosb/app.c
+Using built-in specs.
+Reading specs from /usr/bin/../lib/gcc/msp430/4.6.3/../../../../msp430/lib/msp430mcu.spec
+COLLECT_GCC=msp430-gcc
+COLLECT_LTO_WRAPPER=/usr/bin/../lib/gcc/../../libexec/gcc/msp430/4.6.3/lto-wrapper
+Target: msp430
+Configured with: ../configure --prefix=/home/cire/mm/w/tinyos-main.git/tinyos-2.x/packaging/msp430-46/debian/usr --target=msp430 --enable-languages=c
+Thread model: single
+gcc version 4.6.3 20120301 (mspgcc LTS 20120406 unpatched) (GCC) 
+COLLECT_GCC_OPTIONS='-B' '/usr/lib/ncc' '-mmcu=msp430f1611' '-mcpu=430' '-mmpy=16' '-mivcnt=16' '-Os' '-Wall' '-Wshadow' '-v' '-o' '/tmp/ccigZl2M.o' '-c' '-fdollars-in-identifiers' '-mcpu=430' '-mmpy=16' '-mivcnt=16'
+ /usr/bin/../lib/gcc/../../libexec/gcc/msp430/4.6.3/cc1 -quiet -v -imultilib mmpy-16 -iprefix /usr/bin/../lib/gcc/msp430/4.6.3/ -D__MSP430F1611__ build/telosb/app.c -mcpu=430 -mcpu=430 -mmpy=16 -mmpy=16 -mivcnt=16 -mivcnt=16 -quiet -dumpbase app.c -mmcu=msp430f1611 -mcpu=430 -mmpy=16 -mivcnt=16 -mcpu=430 -mmpy=16 -mivcnt=16 -auxbase-strip /tmp/ccigZl2M.o -Os -Wall -Wshadow -version -fdollars-in-identifiers -o /tmp/ccNN5048.s
+GNU C (GCC) version 4.6.3 20120301 (mspgcc LTS 20120406 unpatched) (msp430)
+	compiled by GNU C version 4.4.5, GMP version 4.3.2, MPFR version 3.0.0, MPC version 0.9
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring nonexistent directory "/usr/bin/../lib/gcc/msp430/4.6.3/../../../../msp430/sys-include"
+ignoring duplicate directory "/usr/bin/../lib/gcc/../../lib/gcc/msp430/4.6.3/include"
+ignoring duplicate directory "/usr/bin/../lib/gcc/../../lib/gcc/msp430/4.6.3/include-fixed"
+ignoring nonexistent directory "/usr/bin/../lib/gcc/../../lib/gcc/msp430/4.6.3/../../../../msp430/sys-include"
+ignoring duplicate directory "/usr/bin/../lib/gcc/../../lib/gcc/msp430/4.6.3/../../../../msp430/include"
+#include "..." search starts here:
+#include <...> search starts here:
+ /usr/bin/../lib/gcc/msp430/4.6.3/include
+ /usr/bin/../lib/gcc/msp430/4.6.3/include-fixed
+ /usr/bin/../lib/gcc/msp430/4.6.3/../../../../msp430/include
+End of search list.
+GNU C (GCC) version 4.6.3 20120301 (mspgcc LTS 20120406 unpatched) (msp430)
+	compiled by GNU C version 4.4.5, GMP version 4.3.2, MPFR version 3.0.0, MPC version 0.9
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+Compiler executable checksum: c3e4d510b984173877456e1c11ec3303
+COLLECT_GCC_OPTIONS='-B' '/usr/lib/ncc' '-mmcu=msp430f1611' '-mcpu=430' '-mmpy=16' '-mivcnt=16' '-Os' '-Wall' '-Wshadow' '-v' '-o' '/tmp/ccigZl2M.o' '-c' '-fdollars-in-identifiers' '-mcpu=430' '-mmpy=16' '-mivcnt=16'
+ /usr/bin/../lib/gcc/msp430/4.6.3/../../../../msp430/bin/as -mcpu=430 -mcpu=430 -mmcu=msp430f1611 -o /tmp/ccigZl2M.o /tmp/ccNN5048.s
+COMPILER_PATH=/usr/lib/ncc/:/usr/bin/../lib/gcc/../../libexec/gcc/msp430/4.6.3/:/usr/bin/../lib/gcc/../../libexec/gcc/:/usr/bin/../lib/gcc/msp430/4.6.3/../../../../msp430/bin/
+LIBRARY_PATH=/usr/bin/../lib/gcc/msp430/4.6.3/mmpy-16/:/usr/bin/../lib/gcc/msp430/4.6.3/../../../../msp430/lib/mmpy-16/:/usr/lib/ncc/:/usr/bin/../lib/gcc/msp430/4.6.3/:/usr/bin/../lib/gcc/:/usr/bin/../lib/gcc/msp430/4.6.3/../../../../msp430/lib/
+COLLECT_GCC_OPTIONS='-B' '/usr/lib/ncc' '-mmcu=msp430f1611' '-mcpu=430' '-mmpy=16' '-mivcnt=16' '-Os' '-Wall' '-Wshadow' '-v' '-o' '/tmp/ccigZl2M.o' '-c' '-fdollars-in-identifiers' '-mcpu=430' '-mmpy=16' '-mivcnt=16'
+COMPILER_PATH=/usr/bin/../libexec/gcc/msp430/4.6.3/:/usr/bin/../libexec/gcc/:/usr/bin/../lib/gcc/msp430/4.6.3/../../../../msp430/bin/
+LIBRARY_PATH=/usr/bin/../lib/gcc/msp430/4.6.3/mmpy-16/:/usr/bin/../lib/gcc/msp430/4.6.3/../../../../msp430/lib/mmpy-16/:/usr/bin/../lib/gcc/msp430/4.6.3/:/usr/bin/../lib/gcc/:/usr/bin/../lib/gcc/msp430/4.6.3/../../../../msp430/lib/
+COLLECT_GCC_OPTIONS='-I' '/usr/lib/ncc' '-D' 'PLATFORM_TELOSB' '-D' 'BOARD_' '-o' 'build/telosb/main.exe' '-Os' '-v' '-Wall' '-Wshadow' '-D' 'DEFINED_TOS_AM_GROUP=0x22' '-D' 'NEW_PRINTF_SEMANTICS' '-D' 'PRINTFUART_ENABLED' '-D' 'IDENT_APPNAME="TestCpuAppC"' '-D' 'IDENT_USERNAME="root"' '-D' 'IDENT_HOSTNAME="tpe420"' '-D' 'IDENT_USERHASH=0x40207fa3L' '-D' 'IDENT_TIMESTAMP=0x51607375L' '-D' 'IDENT_UIDHASH=0x05837e78L' '-mmcu=msp430f1611' '-I' '/opt/tinyos-2.1.2/tos/lib/printf' '-I' '/opt/tinyos-2.1.2/tos/sensorboards/' '-I' '/opt/tinyos-2.1.2/tos/platforms/telosb' '-I' '/opt/tinyos-2.1.2/tos/platforms/telosb' '-I' '/opt/tinyos-2.1.2/tos/platforms/telosb/chips/stm25p' '-I' '/opt/tinyos-2.1.2/tos/platforms/telosa' '-I' '/opt/tinyos-2.1.2/tos/platforms/telosa/chips/cc2420' '-I' '/opt/tinyos-2.1.2/tos/platforms/telosa/chips/s1087' '-I' '/opt/tinyos-2.1.2/tos/platforms/telosa/chips/s10871' '-I' '/opt/tinyos-2.1.2/tos/platforms/telosa/chips/sht11' '-I' '/opt/tinyos-2.1.2/tos/platforms/epic/chips/ds2411' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/alarm' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/control' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/csma' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/interfaces' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/link' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/lowpan' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/lpl' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/packet' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/receive' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/spi' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/transmit' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/unique' '-I' '/opt/tinyos-2.1.2/tos/chips/cc2420/security' '-I' '/opt/tinyos-2.1.2/tos/chips/msp430' '-I' '/opt/tinyos-2.1.2/tos/chips/msp430/adc12' '-I' '/opt/tinyos-2.1.2/tos/chips/msp430/dma' '-I' '/opt/tinyos-2.1.2/tos/chips/msp430/pins' '-I' '/opt/tinyos-2.1.2/tos/chips/msp430/timer' '-I' '/opt/tinyos-2.1.2/tos/chips/msp430/usart' '-I' '/opt/tinyos-2.1.2/tos/chips/msp430/sensors' '-I' '/opt/tinyos-2.1.2/tos/chips/stm25p' '-I' '/opt/tinyos-2.1.2/tos/chips/sht11' '-I' '/opt/tinyos-2.1.2/tos/chips/ds2401' '-I' '/opt/tinyos-2.1.2/tos/lib/timer' '-I' '/opt/tinyos-2.1.2/tos/lib/serial' '-I' '/opt/tinyos-2.1.2/tos/lib/adc' '-I' '/opt/tinyos-2.1.2/tos/lib/power' '-I' '/opt/tinyos-2.1.2/tos/interfaces' '-I' '/opt/tinyos-2.1.2/tos/types' '-I' '/opt/tinyos-2.1.2/tos/system' '-D' 'NESC=134' '-mcpu=430' '-mmpy=16' '-mivcnt=16'
+ /usr/bin/../libexec/gcc/msp430/4.6.3/collect2 -m msp430 -o build/telosb/main.exe /usr/bin/../lib/gcc/msp430/4.6.3/mmpy-16/crt0ivtbl16.o -L/usr/bin/../lib/gcc/msp430/4.6.3/mmpy-16 -L/usr/bin/../lib/gcc/msp430/4.6.3/../../../../msp430/lib/mmpy-16 -L/usr/bin/../lib/gcc/msp430/4.6.3 -L/usr/bin/../lib/gcc -L/usr/bin/../lib/gcc/msp430/4.6.3/../../../../msp430/lib /tmp/ccigZl2M.o -lm -lgcc -lc -lgcc -lcrt0 -L /usr/bin/../lib/gcc/../../msp430/lib/ldscripts/msp430f1611/
+    compiled TestCpuAppC to build/telosb/main.exe
+            6316 bytes in ROM
+             584 bytes in RAM
+msp430-objcopy --output-target=ihex build/telosb/main.exe build/telosb/main.ihex
+    writing TOS image

@@ -1,0 +1,5 @@
+#! /bin/bash
+make clean
+make micaz sim
+python test.py | tee simres
+

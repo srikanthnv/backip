@@ -1,0 +1,65 @@
+// Emacs mode: -*-C-*-
+#include "Station.h"
+#include "../lib/beacon.h"
+
+configuration StationAppC{
+}
+
+implementation{
+  components StationC, MainC, LedsC, ActiveMessageC;
+  components CC2420CsmaC as CsmaC;
+  components CC2420ActiveMessageC as RadioMsg;
+#if PROTO_BCP
+  components BcpC;
+#else
+  components CtpP;
+  components new CollectionSenderC(0x0);
+#endif
+  components new exponentialRandomC(MEAN_PACKET_DELAY) as RandomC;
+  components new TimerMilliC();
+  components new TimerMilliC() as sinkTimer;
+  components new SafeSerialSendC(UART_QUEUE_SIZE, AM_UARTPACKET) as SafeSerialSend;
+  components CC2420ActiveMessageC as LPLProvider;
+  components new AMReceiverC(BEACON_PROTOCOL) as BeaconReceiver;
+
+  StationC.Boot             -> MainC.Boot;
+  StationC.RadioControl     -> ActiveMessageC.SplitControl;
+  StationC.Leds             -> LedsC.Leds;
+  StationC.Timer            -> TimerMilliC.Timer;
+  StationC.sinkTimer        -> sinkTimer.Timer;
+
+#if PROTO_BCP
+  BcpC.BcpDebugIF           -> StationC.BcpDebugIF;
+  StationC.ProtoControl     -> BcpC.StdControl;
+  StationC.RootControl      -> BcpC.RootControl;
+  StationC.Receive          -> BcpC.Receive;
+  StationC.BeaconReceive    -> BeaconReceiver;
+  StationC.Send             -> BcpC.Send;
+
+  // Packet formation interfaces
+  StationC.Packet           -> BcpC.Packet;
+  StationC.BcpPacket        -> BcpC.BcpPacket;
+#else
+  CtpP.CollectionDebug      -> StationC.CollectionDebug;
+
+  StationC.ProtoControl     -> CtpP.StdControl;
+  StationC.RootControl      -> CtpP.RootControl;
+  StationC.Receive          -> CtpP.Receive[0x0];
+  StationC.BeaconReceive    -> BeaconReceiver;
+  StationC.Send             -> CollectionSenderC.Send;
+
+  // Packet formation interfaces
+  StationC.Packet           -> CollectionSenderC.Packet;
+  StationC.CtpPacket        -> CtpP.CtpPacket;
+  StationC.DataSnoop        -> CtpP.Snoop[0x0];
+#endif
+
+  StationC.Random           -> RandomC; 
+  StationC.SafeSerialSendIF -> SafeSerialSend.SafeSerialSendIF;
+  StationC.UartReceive      -> SafeSerialSend.UartReceive;
+  StationC.SerialControl    -> SafeSerialSend.StdControl;
+  StationC.AMPacket         -> ActiveMessageC.AMPacket;
+  StationC.LPL              -> LPLProvider;
+  StationC.csmaControl      -> CsmaC;
+  StationC                  -> RadioMsg.CC2420Packet;
+}

@@ -1,0 +1,300 @@
+// emacs mode: -*-C-*-
+#include "Station.h"
+#include "../lib/beacon.h"
+#include "TimeSyncMsg.h"
+#if PROTO_CTP
+#include <CtpDebugMsg.h>
+#endif
+
+module StationC{
+  uses interface Boot;
+  uses interface SplitControl as RadioControl;
+  uses interface SplitControl as csmaControl;
+  uses interface StdControl as ProtoControl;
+  uses interface Leds;
+  uses interface Timer<TMilli>;
+  uses interface Timer<TMilli> as sinkTimer;
+  uses interface RootControl;
+  uses interface Receive;
+  uses interface Receive as BeaconReceive;
+  uses interface Send;
+  uses interface Packet;
+  uses interface CC2420Packet;
+#if PROTO_BCP
+  uses interface BcpPacket;
+#else
+  uses interface CtpPacket;
+  uses interface Receive as DataSnoop;
+#endif
+  uses interface LowPowerListening as LPL; 
+  uses interface AMPacket;
+  uses interface Random;
+  uses interface SafeSerialSendIF;
+  uses interface Receive as UartReceive;
+  uses interface StdControl as SerialControl;
+#if PROTO_BCP
+   provides interface BcpDebugIF;
+#else
+   provides interface CollectionDebug;
+#endif
+}
+implementation{
+  message_t packet;
+  BeaconMsg* beaconData;
+  stationDataMsg stationData;
+  uint32_t startTestTime = 0;
+  uint32_t radioOnDuration = 0;
+  uint32_t radioOffDuration = 0;
+  uint32_t lastRadioOnTime = 0;
+  uint32_t lastRadioOffTime = 0;
+  am_addr_t parent;
+
+  // function declarations
+  uint16_t getRss(message_t* msg);
+
+  event void Boot.booted() {    
+    call RadioControl.start();
+    call SerialControl.start();
+    call Timer.startOneShot(10000);
+    call sinkTimer.startPeriodic(1000);
+  }
+
+  uint16_t getRss(message_t* msg){
+    return (uint16_t)(call CC2420Packet.getRssi(msg));
+  }
+
+  event void csmaControl.startDone( error_t err ){
+      if( lastRadioOnTime == lastRadioOffTime ){
+        // first time-stamp, we can't compute durations
+        lastRadioOnTime = call Timer.getNow();
+      } else {
+        lastRadioOnTime = call Timer.getNow();
+        radioOffDuration += lastRadioOnTime - lastRadioOffTime;
+      }
+  }
+
+  event void csmaControl.stopDone( error_t err ){
+    if( lastRadioOnTime == lastRadioOffTime ){
+      // first time-stamp, we can't compute durations - shouldn't happen this way tho
+      lastRadioOffTime = call Timer.getNow();
+    } else {
+      lastRadioOffTime = call Timer.getNow();
+      radioOnDuration += lastRadioOffTime - lastRadioOnTime;
+    }
+  }
+
+  event void RadioControl.startDone(error_t err) {
+    if (err != SUCCESS) {    
+      call RadioControl.start();
+    } 
+    else {
+      call ProtoControl.start();
+    }
+  }
+
+  event void RadioControl.stopDone(error_t err) {
+    // Radio has been shut down
+    // not implemented
+  }
+
+  void sendMessage() {
+    stationDataMsg * sendingData;
+    error_t err;
+    message_t* messagePtr;
+    UartPacket* uartPacketPtr;
+
+    // Send a packet to Bcp
+    sendingData = call Packet.getPayload(&packet, sizeof(stationDataMsg));
+    call Packet.setPayloadLength(&packet, sizeof(stationDataMsg));
+#if PROTO_BCP
+    call BcpPacket.setOrigin(&packet, call AMPacket.address());
+#else
+    call CtpPacket.setOrigin(&packet, call AMPacket.address());
+#endif
+    // populate packet fields
+    sendingData->stationID = stationData.stationID;
+    sendingData->beaconID = stationData.beaconID;
+    sendingData->sequence = stationData.sequence;
+    sendingData->RSSI = stationData.RSSI;
+    
+    err = call Send.send(&packet, sizeof(stationDataMsg)); 
+    if(err == SUCCESS){
+      call Leds.led2Toggle();
+    }else{
+      messagePtr = call SafeSerialSendIF.getMessageBuffer();
+      uartPacketPtr = (UartPacket *) call SafeSerialSendIF.getPayload(messagePtr, sizeof(UartPacket));
+      uartPacketPtr->time = 0x00;
+      uartPacketPtr->field1 = err;
+      uartPacketPtr->field2 = ESIZE;
+      uartPacketPtr->field3 = EBUSY;
+      uartPacketPtr->field4 = EOFF;
+      uartPacketPtr->field5 = FAIL;
+      uartPacketPtr->field6 = 0x00;
+      uartPacketPtr->field7 = 0x00;
+      uartPacketPtr->field8 = 0x00;
+      uartPacketPtr->type = 0xee;
+
+      call SafeSerialSendIF.queueMessageBuffer(messagePtr);
+    }
+  }
+
+  event void Timer.fired() {
+    if(TOS_NODE_ID < 100){
+      sendMessage();
+    }
+  }
+
+  event void sinkTimer.fired(){
+    if(TOS_NODE_ID == 1)
+      call RootControl.setRoot();
+    else{
+      call RootControl.unsetRoot();
+    }
+  }
+
+  event message_t* BeaconReceive.receive(message_t* msg, void* payload, uint8_t len){
+    message_t* messagePtr;
+    UartPacket* uartPacketPtr;
+    uint32_t wait_time;
+    beaconData = (BeaconMsg*)payload;
+    wait_time = call Random.rand32();
+
+    stationData.RSSI = getRss(msg)+ RSSI_OFFSET;
+    stationData.sequence = beaconData->sequence;
+    stationData.stationID = TOS_NODE_ID;
+    stationData.beaconID = beaconData->beaconID;
+
+    if(TOS_NODE_ID != 1){
+      call Leds.led0Toggle();
+      // Send a serial packet notifying of packet arrival
+      messagePtr = call SafeSerialSendIF.getMessageBuffer();
+      if( messagePtr == 0 ){
+	call Leds.led1Toggle();
+	return msg;
+      }
+      uartPacketPtr = (UartPacket *) call SafeSerialSendIF.getPayload(messagePtr, sizeof(UartPacket));
+      if( uartPacketPtr == NULL )
+	dbg("Error", "%s:uartPacketPtr is NULL! Packet size error?\n",__FUNCTION__);
+
+      uartPacketPtr->field1 = stationData.sequence;
+      uartPacketPtr->field2 = stationData.stationID;
+      uartPacketPtr->field3 = stationData.beaconID;
+      uartPacketPtr->field4 = stationData.RSSI;
+      uartPacketPtr->type = BEACON_TYPE;
+
+      call SafeSerialSendIF.queueMessageBuffer(messagePtr);
+      }
+
+    //wait random time to decrease queue spikes
+    call Timer.startOneShot(wait_time); 
+
+   
+    return msg;
+  }
+  
+  event message_t* Receive.receive(message_t* msg, void* payload, uint8_t len) {
+    message_t *  messagePtr;
+    UartPacket * uartPacketPtr;
+    stationDataMsg * receivedData = (stationDataMsg*)(payload);
+
+    call Leds.led0Toggle();
+
+    // Send a serial packet notifying of packet arrival
+    messagePtr = call SafeSerialSendIF.getMessageBuffer();
+    if( messagePtr == 0 ){
+      return msg;
+    }
+    
+    uartPacketPtr = (UartPacket *) call SafeSerialSendIF.getPayload(messagePtr, sizeof(UartPacket));
+    if(uartPacketPtr == NULL)
+      call Leds.led2On();
+    
+    uartPacketPtr->time = 0x00;
+    uartPacketPtr->field1 = receivedData->sequence;
+    uartPacketPtr->field2 = receivedData->RSSI;
+    uartPacketPtr->field3 = call Timer.getNow();
+
+#ifdef PROTO_BCP
+    uartPacketPtr->field4 = call BcpPacket.getTxCount(msg);
+    uartPacketPtr->field5 = call BcpPacket.getHopCount(msg);
+#else
+    uartPacketPtr->field4 = call CtpPacket.getTxCount(msg);
+    uartPacketPtr->field5 = call CtpPacket.getHopCount(msg);
+#endif
+
+    uartPacketPtr->field6 = 0x00;
+    uartPacketPtr->field7 = receivedData->stationID;
+    uartPacketPtr->field8 = receivedData->beaconID;
+    uartPacketPtr->type = SINK_RECEIVE_TYPE;
+    call SafeSerialSendIF.queueMessageBuffer(messagePtr);
+    return msg;
+  }
+  
+  event void Send.sendDone(message_t *msg, error_t error){
+    // not implemented   
+  }
+ 
+  
+  event message_t* UartReceive.receive(message_t* bufPtr_p, void* payload_p,
+                                       uint8_t len_p) {
+    return bufPtr_p;
+  }
+
+
+#if PROTO_BCP
+
+  
+  command void BcpDebugIF.reportBackpressure(uint32_t dataQueueSize_p, uint32_t virtualQueueSize_p, uint16_t localTXCount_p, uint8_t origin_p, uint8_t originSeqNo_p, uint8_t reportSource_p){
+
+  }
+  
+  
+  command void BcpDebugIF.reportError( uint8_t type_p ){
+  }
+  
+
+  
+  command void BcpDebugIF.reportLinkRate(uint8_t neighbor_p, uint16_t previousLinkPacketTxTime_p, 
+                                         uint16_t updateLinkPacketTxTime_p, uint16_t newLinkPacketTxTime_p,
+                                         uint16_t latestLinkPacktLossEst_p){
+  }
+  
+  command void BcpDebugIF.reportValues(uint32_t field1_p, uint32_t field2_p, uint32_t field3_p, uint16_t field4_p,
+                              uint16_t field5_p, uint16_t field6_p, uint8_t field7_p, uint8_t field8_p){
+ } 
+  
+#else
+    command error_t CollectionDebug.logEvent(uint8_t type){
+      return SUCCESS;
+    }
+
+    command error_t CollectionDebug.logEventSimple(uint8_t type, uint16_t arg){
+      return SUCCESS;
+    }
+
+    command error_t CollectionDebug.logEventDbg(uint8_t type, uint16_t arg1, uint16_t arg2, uint16_t arg3){
+      return SUCCESS;
+    } 
+
+    command error_t CollectionDebug.logEventMsg(uint8_t type, uint16_t msg, am_addr_t origin, am_addr_t node){
+      return SUCCESS;
+    }
+  
+    command error_t CollectionDebug.logEventRoute(uint8_t type, am_addr_t parent_p, uint8_t hopcount, uint16_t metric){
+      return SUCCESS;
+    }
+  
+
+    event message_t* DataSnoop.receive(message_t* msg, void *payload, uint8_t len){ 
+      //uint16_t loopCount = 0;
+      //uint16_t loopSum = 0;
+
+      // Checking to see whether CTP performance degrades under snoop usage.
+      //for( loopCount = 0; loopCount < 100; loopCount++ ){
+      //loopSum += loopCount;
+      //}
+
+      return msg;
+    } 
+#endif
+}

@@ -1,0 +1,5 @@
+ graph graphname {
+     a[shape = circle,pos = "10,20",width = 0.01];
+     b[shape = circle,pos = "40,10",width = 0.01];
+ }
+

@@ -1,0 +1,5 @@
+../startExperiment testbed.usc.edu 10001&
+../startExperiment testbed.usc.edu 10004&
+../startExperiment testbed.usc.edu 10015&
+../startExperiment testbed.usc.edu 10023&
+../startExperiment testbed.usc.edu 10039&

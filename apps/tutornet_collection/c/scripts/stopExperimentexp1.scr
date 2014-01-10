@@ -1,0 +1,2 @@
+../uartPacketSend/resetExperiment testbed.usc.edu 10001
+../uartPacketSend/resetExperiment testbed.usc.edu 10007
